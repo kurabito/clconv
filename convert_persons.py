@@ -5,16 +5,12 @@ def parse_changes(record):
     return record.split('\n')
 
 def parse_date_and_change(record):
-    # return record.split(' UTC: ')
     return re.split(r' UTC: | PDT: ', record)
 
 with open('wp_cl_person.json') as input_changes:
     data = json.load(input_changes)
 
 output_events = open("person_changes.json", "w", encoding='utf-8')
-
-# with open('data.json', 'w', encoding='utf-8') as f:
-#     json.dump(data, f, ensure_ascii=False, indent=4)
 
 for i in data:
     person = i['person_id']
@@ -134,8 +130,6 @@ for i in data:
                 new_value = single_change[17:]
 
             record = {"event_type_id": event_type_id, "entity_id": entity_id, "data_name": data_name, "old_value": old_value, "new_value": new_value, "extra_info": extra_info, "event_date": date}
-            # print(record)
-            # output_events.write(str(record))
             json.dump(record, output_events, ensure_ascii=False, indent=4)
 
 output_events.close()
