@@ -13,7 +13,7 @@ with open('wp_cl_person.json') as input_changes:
 output_events = open("person_changes.json", "w", encoding='utf-8')
 
 for i in data:
-    person = i['person_id']
+    person = int(i['person_id'])
     change = i['change_record']
     changes = parse_changes(change)
     for item in changes:
@@ -34,7 +34,7 @@ for i in data:
                 entity_id = person
             # Hub owner or delegate change
             if single_change.startswith(('Made 30', 'Made 50', 'Made 70')):
-                entity_id = single_change[5:10]
+                entity_id = int(single_change[5:10])
                 new_value = person
                 if single_change.endswith('owner'):
                     event_type_id = 8
@@ -42,7 +42,7 @@ for i in data:
                 else:
                     event_type_id = 9
                     data_name = 'delegate'
-                extra_info = person + ' ' + single_change
+                extra_info = str(person) + ' ' + single_change
             # Profile updated
             if single_change == 'User updated profile.':
                 event_type_id = 3
@@ -57,7 +57,7 @@ for i in data:
             # Hub permission removed
             if single_change.startswith('Permission removed from'):
                 event_type_id = 11
-                entity_id = single_change[24:29]
+                entity_id = int(single_change[24:29])
                 data_name = 'owner or delegate'
                 old_value = person
             if single_change.startswith('assignment_'):
@@ -72,7 +72,7 @@ for i in data:
                 new_value = single_change[23:]
             if single_change.startswith('Removed as pantry liaison for '):
                 event_type_id = 12
-                entity_id = single_change[29:34]
+                entity_id = int(single_change[29:34])
                 data_name = 'pantry_liason'
                 old_value = person
             if single_change.startswith('Roles changed from '):
@@ -93,17 +93,18 @@ for i in data:
                 data_name = 'person_status'
                 new_value = 'active'
             if single_change.startswith('Removed as '):
-                hub_id = single_change[11:16]
-                if single_change.endswith('owner'):
-                    event_type_id = 8
-                    entity_id = hub_id
-                    data_name = 'owner'
-                    old_value = person
-                if single_change.endswith('delegate'):
-                    event_type_id = 9
-                    entity_id = hub_id
-                    data_name = 'delegate'
-                    old_value = person
+                if not single_change.startswith('Removed as pantry liaison for '):
+                    hub_id = int(single_change[11:16])
+                    if single_change.endswith('owner'):
+                        event_type_id = 8
+                        entity_id = hub_id
+                        data_name = 'owner'
+                        old_value = person
+                    if single_change.endswith('delegate'):
+                        event_type_id = 9
+                        entity_id = hub_id
+                        data_name = 'delegate'
+                        old_value = person
             if single_change == 'Initial profile update':
                 event_type_id = 2
                 entity_id = person
@@ -120,7 +121,7 @@ for i in data:
                 new_value = single_change[20:]
             if single_change.startswith('Made pantry liaison for '):
                 event_type_id = 12
-                entity_id = single_change[24:]
+                entity_id = int(single_change[24:])
                 data_name = 'liason'
                 new_value = person
             if single_change.startswith('Roles changed to '):
