@@ -13,7 +13,7 @@ with open('wp_cl_hub.json') as input_changes:
 output_events = open("hub_changes.json", "w", encoding='utf-8')
 
 for i in data:
-    hub = i['hub_id']
+    hub = int(i['hub_id'])
     change = i['change_record']
     changes = parse_changes(change)
     for item in changes:

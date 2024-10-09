@@ -13,7 +13,7 @@ with open('wp_cl_food_pantry.json') as input_changes:
 output_events = open("pantry_changes.json", "w", encoding='utf-8')
 
 for i in data:
-    food_pantry = i['food_pantry_id']
+    food_pantry = int(i['food_pantry_id'])
     change = i['change_record']
     changes = parse_changes(change)
     for item in changes:
