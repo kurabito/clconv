@@ -30,92 +30,92 @@ for i in data:
                 extra_info = single_change
 
                 if single_change.startswith('Pantries changed to '):
-                    event_type_id = 10
+                    event_type_id = 9
                     entity_id = hub
                     data_name = 'pantries'
                     new_value = single_change[20:]
                 if single_change.endswith(' made owner'):
-                    event_type_id = 8
+                    event_type_id = 7
                     entity_id = hub
                     data_name = 'owner'
                     new_value = single_change[0:6]
                 if single_change.startswith('Hub owner set to '):
-                    event_type_id = 8
+                    event_type_id = 7
                     entity_id = hub
                     data_name = 'owner'
                     new_value = single_change[18:]
                 if single_change.endswith(' removed as owner'):
-                    event_type_id = 8
+                    event_type_id = 7
                     entity_id = hub
                     data_name = 'owner'
                     old_value = single_change[0:6]
                 if single_change.endswith(' made delegate'):
-                    event_type_id = 9
+                    event_type_id = 8
                     entity_id = hub
                     data_name = 'delegates'
                     new_value = single_change[0:6]
                 if single_change.endswith(' removed as delegate'):
-                    event_type_id = 9
+                    event_type_id = 8
                     entity_id = hub
                     data_name = 'delegates'
                     old_value = single_change[0:6]
                 if single_change.endswith(' permission removed'):
-                    event_type_id = 11
+                    event_type_id = 10
                     entity_id = hub
                     data_name = 'permissions'
                     old_value = single_change[0:6]
                 if single_change.endswith('made Array'):
-                    event_type_id = 11
+                    event_type_id = 10
                     entity_id = hub
                     data_name = 'permissions'
                     old_value = single_change[0:6]
                 if single_change.startswith('Changed drop_off_instructions'):
-                    event_type_id = 11
+                    event_type_id = 10
                     entity_id = hub
                     data_name = 'drop_off_instructions'
                     new_value = single_change[33:]
                 if single_change.startswith('Changed drop_off_deadline'):
-                    event_type_id = 11
+                    event_type_id = 10
                     entity_id = hub
                     data_name = 'drop_off_deadline'
                     new_value = single_change[29:]
                 if single_change.startswith('Changed neighborhood'):
-                    event_type_id = 11
+                    event_type_id = 10
                     entity_id = hub
                     data_name = 'neighborhood'
                     new_value = single_change[24:]
                 if single_change.startswith('Changed location_id'):
-                    event_type_id = 11
+                    event_type_id = 10
                     entity_id = hub
                     data_name = 'location_id'
                     new_value = single_change[31:]
                 if single_change.startswith('Changed mailing_location_id'):
-                    event_type_id = 11
+                    event_type_id = 10
                     entity_id = hub
                     data_name = 'mailing_location_id'
                     new_value = single_change[31:]
                 if single_change.startswith('Changed primary_area'):
-                    event_type_id = 11
+                    event_type_id = 10
                     entity_id = hub
                     data_name = 'primary_area'
                     new_value = single_change[24:]
                 if single_change.startswith('Changed other_info'):
-                    event_type_id = 11
+                    event_type_id = 10
                     entity_id = hub
                     data_name = 'other_info'
                     new_value = single_change[22:]
                 if single_change.startswith('Changed hub_type'):
-                    event_type_id = 11
+                    event_type_id = 10
                     entity_id = hub
                     data_name = 'hub_type'
                     new_value = single_change[21:]
                 if single_change.startswith('Changed market_id'):
-                    event_type_id = 11
+                    event_type_id = 10
                     entity_id = hub
                     data_name = 'market_id'
                     new_value = single_change[22:]
                 if single_change.startswith('Hub closed changed to '):
-                    event_type_id = 11
+                    event_type_id = 10
                     entity_id = hub
                     data_name = 'hub_closed'
                     new_value = single_change[23:]

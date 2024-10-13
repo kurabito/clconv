@@ -7,10 +7,6 @@ def parse_changes(record):
 def parse_date_and_change(record):
     return re.split(r' UTC: | PDT: ', record)
 
-def write_record(event_type_id, entity_id, data_name, old_value, new_value, extra_info, date):
-    record = {"event_type_id": event_type_id, "entity_id": entity_id, "data_name": data_name, "old_value": old_value, "new_value": new_value, "extra_info": extra_info, "event_date": date}
-    json.dump(record, output_events, ensure_ascii=False, indent=4)
-
 with open('wp_cl_person.json') as input_changes:
     data = json.load(input_changes)
 
@@ -41,11 +37,9 @@ for i in data:
                 entity_id = int(single_change[5:10])
                 new_value = person
                 if single_change.endswith('owner'):
-                    # write_record(14, person, 'owner', None, entity_id, extra_info, date)
                     event_type_id = 7
                     data_name = 'owner'
                 else:
-                    # write_record(15, person, 'delegate', None, entity_id, extra_info, date)
                     event_type_id = 8
                     data_name = 'delegate'
                 extra_info = str(person) + ' ' + single_change
@@ -102,13 +96,11 @@ for i in data:
                 if not single_change.startswith('Removed as pantry liaison for '):
                     hub_id = int(single_change[11:16])
                     if single_change.endswith('owner'):
-                        # write_record(14, person, 'owner', hub_id, None, extra_info, date)
                         event_type_id = 7
                         entity_id = hub_id
                         data_name = 'owner'
                         old_value = person
                     if single_change.endswith('delegate'):
-                        # write_record(15, person, 'delegate', hub_id, None, extra_info, date)
                         event_type_id = 8
                         entity_id = hub_id
                         data_name = 'delegate'
@@ -141,8 +133,5 @@ for i in data:
 
             record = {"event_type_id": event_type_id, "entity_id": entity_id, "data_name": data_name, "old_value": old_value, "new_value": new_value, "extra_info": extra_info, "event_date": date}
             json.dump(record, output_events, ensure_ascii=False, indent=4)
-
-            # if event_type_id == 7:
-            #     record = {"event_type_id": 14, "entity_id": entity_id, "data_name": data_name, "old_value": old_value, "new_value": new_value, "extra_info": extra_info, "event_date": date}
 
 output_events.close()
