@@ -7,6 +7,10 @@ def parse_changes(record):
 def parse_date_and_change(record):
     return re.split(r' UTC: | PDT: ', record)
 
+def write_record(event_type_id, entity_id, data_name, old_value, new_value, extra_info, date):
+    record = {"event_type_id": event_type_id, "entity_id": entity_id, "data_name": data_name, "old_value": old_value, "new_value": new_value, "extra_info": extra_info, "event_date": date}
+    json.dump(record, output_events, ensure_ascii=False, indent=4)
+
 with open('wp_cl_person.json') as input_changes:
     data = json.load(input_changes)
 
@@ -71,8 +75,9 @@ for i in data:
                 data_name = 'person_status'
                 new_value = single_change[23:]
             if single_change.startswith('Removed as pantry liaison for '):
-                event_type_id = 11
                 entity_id = int(single_change[29:34])
+                write_record(16, person, 'liaison', entity_id, None, extra_info, date)
+                event_type_id = 11
                 data_name = 'pantry_liason'
                 old_value = person
             if single_change.startswith('Roles changed from '):
