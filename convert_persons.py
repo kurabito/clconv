@@ -7,6 +7,10 @@ def parse_changes(record):
 def parse_date_and_change(record):
     return re.split(r' UTC: | PDT: ', record)
 
+def write_record(event_type_id, entity_id, data_name, old_value, new_value, extra_info, date):
+    record = {"event_type_id": event_type_id, "entity_id": entity_id, "data_name": data_name, "old_value": old_value, "new_value": new_value, "extra_info": extra_info, "event_date": date}
+    json.dump(record, output_events, ensure_ascii=False, indent=4)
+
 with open('wp_cl_person.json') as input_changes:
     data = json.load(input_changes)
 
@@ -30,65 +34,67 @@ for i in data:
 
             # Profile created
             if single_change == 'Initial Change Record':
-                event_type_id = 2
+                event_type_id = 1
                 entity_id = person
             # Hub owner or delegate change
             if single_change.startswith(('Made 30', 'Made 50', 'Made 70')):
                 entity_id = int(single_change[5:10])
                 new_value = person
                 if single_change.endswith('owner'):
-                    event_type_id = 8
+                    # write_record(14, person, 'owner', None, entity_id, extra_info, date)
+                    event_type_id = 7
                     data_name = 'owner'
                 else:
-                    event_type_id = 9
+                    # write_record(15, person, 'delegate', None, entity_id, extra_info, date)
+                    event_type_id = 8
                     data_name = 'delegate'
                 extra_info = str(person) + ' ' + single_change
             # Profile updated
             if single_change == 'User updated profile.':
-                event_type_id = 3
+                event_type_id = 2
                 entity_id = person
                 data_name = 'profile'
             # Person status updated
             if single_change == 'Set inactive':
-                event_type_id = 7
+                event_type_id = 6
                 entity_id = person
                 data_name = 'person_status'
                 new_value = 'inactive'
             # Hub permission removed
             if single_change.startswith('Permission removed from'):
-                event_type_id = 11
+                event_type_id = 10
                 entity_id = int(single_change[24:29])
                 data_name = 'owner or delegate'
                 old_value = person
             if single_change.startswith('assignment_'):
-                event_type_id = 5
+                event_type_id = 4
                 entity_id = person
                 data_name = 'assignment'
                 new_value = single_change
             if single_change.startswith('Admin changed status to '):
-                event_type_id = 7
+                event_type_id = 6
                 entity_id = person
                 data_name = 'person_status'
                 new_value = single_change[23:]
             if single_change.startswith('Removed as pantry liaison for '):
-                event_type_id = 12
+                event_type_id = 11
                 entity_id = int(single_change[29:34])
                 data_name = 'pantry_liason'
                 old_value = person
             if single_change.startswith('Roles changed from '):
-                event_type_id = 6
+                event_type_id = 5
                 entity_id = person
                 data_name = 'roles'
                 role_values = single_change.split(' to ')
                 old_value = role_values[0][19:]
                 new_value = role_values[1]
             if single_change.startswith('Hub changed to '):
-                event_type_id = 4
+                event_type_id = 3
                 entity_id = person
                 data_name = 'hub_id'
                 new_value = single_change[15:]
             if single_change == 'Set active':
-                event_type_id = 7
+                event_type_id = 6
                 entity_id = person
                 data_name = 'person_status'
                 new_value = 'active'
@@ -96,41 +102,47 @@ for i in data:
                 if not single_change.startswith('Removed as pantry liaison for '):
                     hub_id = int(single_change[11:16])
                     if single_change.endswith('owner'):
-                        event_type_id = 8
+                        # write_record(14, person, 'owner', hub_id, None, extra_info, date)
+                        event_type_id = 7
                         entity_id = hub_id
                         data_name = 'owner'
                         old_value = person
                     if single_change.endswith('delegate'):
-                        event_type_id = 9
+                        # write_record(15, person, 'delegate', hub_id, None, extra_info, date)
+                        event_type_id = 8
                         entity_id = hub_id
                         data_name = 'delegate'
                         old_value = person
             if single_change == 'Initial profile update':
-                event_type_id = 2
+                event_type_id = 1
                 entity_id = person
                 data_name = 'profile'
             if single_change.startswith('Assigned role '):
-                event_type_id = 6
+                event_type_id = 5
                 entity_id = person
                 data_name = 'roles'
                 new_value = single_change[14:]
             if single_change.startswith('User changed hub to '):
-                event_type_id = 4
+                event_type_id = 3
                 entity_id = person
                 data_name = 'hub_id'
                 new_value = single_change[20:]
             if single_change.startswith('Made pantry liaison for '):
-                event_type_id = 12
                 entity_id = int(single_change[24:])
-                data_name = 'liason'
+                write_record(16, person, 'liaison', entity_id, None, extra_info, date)
+                event_type_id = 11
+                data_name = 'liaison'
                 new_value = person
             if single_change.startswith('Roles changed to '):
-                event_type_id = 6
+                event_type_id = 5
                 entity_id = person
                 data_name = 'roles'
                 new_value = single_change[17:]
 
             record = {"event_type_id": event_type_id, "entity_id": entity_id, "data_name": data_name, "old_value": old_value, "new_value": new_value, "extra_info": extra_info, "event_date": date}
             json.dump(record, output_events, ensure_ascii=False, indent=4)
+
+            # if event_type_id == 7:
+            #     record = {"event_type_id": 14, "entity_id": entity_id, "data_name": data_name, "old_value": old_value, "new_value": new_value, "extra_info": extra_info, "event_date": date}
 
 output_events.close()
