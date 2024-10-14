@@ -39,13 +39,22 @@ for i in data:
             # Hub owner or delegate change
             if single_change.startswith(('Made 30', 'Made 50', 'Made 70')):
                 entity_id = int(single_change[5:10])
-                new_value = person
                 if single_change.endswith('owner'):
-                    event_type_id = 7
+                    event_type_id = 14
+                    new_value = person
                     data_name = 'owner'
-                else:
-                    event_type_id = 8
-                    data_name = 'delegate'
+                if single_change.endswith('delegate'):
+                    event_type_id = 15
+                    new_value = person
+                    data_name = 'owner'
+                if single_change.endswith('none'):
+                    event_type_id = 17
+                    old_value = person
+                    data_name = 'owner or delegate'
+                if single_change.endswith('Array'):
+                    event_type_id = 17
+                    new_value = person
+                    data_name = 'owner or delegate'
                 extra_info = str(person) + ' ' + single_change
             # Profile updated
             if single_change == 'User updated profile.':
@@ -60,7 +69,7 @@ for i in data:
                 new_value = 'inactive'
             # Hub permission removed
             if single_change.startswith('Permission removed from'):
-                event_type_id = 10
+                event_type_id = 17
                 entity_id = int(single_change[24:29])
                 data_name = 'owner or delegate'
                 old_value = person
@@ -101,12 +110,12 @@ for i in data:
                 if not single_change.startswith('Removed as pantry liaison for '):
                     hub_id = int(single_change[11:16])
                     if single_change.endswith('owner'):
-                        event_type_id = 7
+                        event_type_id = 14
                         entity_id = hub_id
                         data_name = 'owner'
                         old_value = person
                     if single_change.endswith('delegate'):
-                        event_type_id = 8
+                        event_type_id = 15
                         entity_id = hub_id
                         data_name = 'delegate'
                         old_value = person
