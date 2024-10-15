@@ -38,22 +38,23 @@ for i in data:
                 entity_id = person
             # Hub owner or delegate change
             if single_change.startswith(('Made 30', 'Made 50', 'Made 70')):
-                entity_id = int(single_change[5:10])
+                entity_id = person
+                hub_id = int(single_change[5:10])
                 if single_change.endswith('owner'):
                     event_type_id = 14
-                    new_value = person
+                    new_value = hub_id
                     data_name = 'owner'
                 if single_change.endswith('delegate'):
                     event_type_id = 15
-                    new_value = person
-                    data_name = 'owner'
+                    new_value = hub_id
+                    data_name = 'delegate'
                 if single_change.endswith('none'):
                     event_type_id = 17
-                    old_value = person
+                    old_value = hub_id
                     data_name = 'owner or delegate'
                 if single_change.endswith('Array'):
                     event_type_id = 17
-                    new_value = person
+                    new_value = hub_id
                     data_name = 'owner or delegate'
                 extra_info = str(person) + ' ' + single_change
             # Profile updated
@@ -70,9 +71,9 @@ for i in data:
             # Hub permission removed
             if single_change.startswith('Permission removed from'):
                 event_type_id = 17
-                entity_id = int(single_change[24:29])
+                entity_id = person
                 data_name = 'owner or delegate'
-                old_value = person
+                old_value = int(single_change[24:29])
             if single_change.startswith('assignment_'):
                 event_type_id = 4
                 entity_id = person
@@ -82,13 +83,14 @@ for i in data:
                 event_type_id = 6
                 entity_id = person
                 data_name = 'person_status'
-                new_value = single_change[23:]
+                new_value = single_change[24:]
             if single_change.startswith('Removed as pantry liaison for '):
-                entity_id = int(single_change[29:34])
+                entity_id = int(single_change[30:35])
                 write_record(16, person, 'liaison', entity_id, None, extra_info, date)
                 event_type_id = 11
                 data_name = 'pantry_liason'
                 old_value = person
+                extra_info = str(person) + ' ' + single_change
             if single_change.startswith('Roles changed from '):
                 event_type_id = 5
                 entity_id = person
@@ -111,14 +113,14 @@ for i in data:
                     hub_id = int(single_change[11:16])
                     if single_change.endswith('owner'):
                         event_type_id = 14
-                        entity_id = hub_id
+                        entity_id = person
                         data_name = 'owner'
-                        old_value = person
+                        old_value = hub_id
                     if single_change.endswith('delegate'):
                         event_type_id = 15
-                        entity_id = hub_id
+                        entity_id = person
                         data_name = 'delegate'
-                        old_value = person
+                        old_value = hub_id
             if single_change == 'Initial profile update':
                 event_type_id = 1
                 entity_id = person
@@ -139,6 +141,7 @@ for i in data:
                 event_type_id = 11
                 data_name = 'liaison'
                 new_value = person
+                extra_info = str(person) + ' ' + single_change
             if single_change.startswith('Roles changed to '):
                 event_type_id = 5
                 entity_id = person
